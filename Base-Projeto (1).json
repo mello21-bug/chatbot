@@ -1,0 +1,876 @@
+{
+  "name": "Base-Projeto",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {
+          "fileName": "={{ $json.name }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -720,
+        192
+      ],
+      "id": "5b8732b6-9a22-4f1b-8f02-f758a78499af",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "Ftg9m1BsCjcZZ2tU",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1Q6wHVGOkiTLeP9K_VeBbTDlz4_JLz1yf",
+          "mode": "list",
+          "cachedResultName": "Pasta Fonte",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1Q6wHVGOkiTLeP9K_VeBbTDlz4_JLz1yf"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -928,
+        112
+      ],
+      "id": "8e5b7412-1776-4f9c-8f2e-c02c7d72a92e",
+      "name": "Google Drive Trigger1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "Ftg9m1BsCjcZZ2tU",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1Q6wHVGOkiTLeP9K_VeBbTDlz4_JLz1yf",
+          "mode": "list",
+          "cachedResultName": "Pasta Fonte",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1Q6wHVGOkiTLeP9K_VeBbTDlz4_JLz1yf"
+        },
+        "event": "fileUpdated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -928,
+        288
+      ],
+      "id": "01496712-9b0a-48c5-a851-548f0608e76d",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "Ftg9m1BsCjcZZ2tU",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -512,
+        192
+      ],
+      "id": "1b8dc443-1bd4-4904-aa82-30bafaeae8ec",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -368,
+        448
+      ],
+      "id": "27f787ee-ab26-496f-a340-b2a58015c9d2",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "bxUvvGoShN0IbQOG",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5",
+          "mode": "list",
+          "cachedResultName": "gpt-5"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -368,
+        -144
+      ],
+      "id": "49bce8ee-d790-4e93-8fd7-1145c1687f84",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "bxUvvGoShN0IbQOG",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $json.text }}",
+        "textSplittingMode": "custom",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        -32,
+        368
+      ],
+      "id": "c2267015-fe1b-41d2-ab04-d97d1aa7d980",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "chunkOverlap": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        544
+      ],
+      "id": "642fbeee-80d3-4cf7-afe0-50801554cb7d",
+      "name": "Character Text Splitter"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        -160,
+        192
+      ],
+      "id": "08a320a8-dd87-42a1-8283-fdc024c7f9ca",
+      "name": "Supabase Vector Store",
+      "credentials": {
+        "supabaseApi": {
+          "id": "euYIDyy7Jez8jUWL",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Ative essa tool sempre que o usuário perguntar sobre algo relacionado ao PET",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        48,
+        -128
+      ],
+      "id": "0e2780ce-36cc-47c2-b026-e45683db1840",
+      "name": "Supabase Vector Store1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "euYIDyy7Jez8jUWL",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -80,
+        32
+      ],
+      "id": "609e35b9-4c94-40f0-8b91-27e4f196a440",
+      "name": "Embeddings OpenAI1",
+      "credentials": {
+        "openAiApi": {
+          "id": "bxUvvGoShN0IbQOG",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -928,
+        -336
+      ],
+      "id": "b4a3de4f-cfa7-4dbb-9d8b-03a2c998cac4",
+      "name": "Webhook",
+      "webhookId": "6a60a8e7-a918-43ce-a9db-db7febd3e25f"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "26c5cd16-91c5-4f4b-a4a0-e546ef449359",
+              "name": "session",
+              "value": "={{ $json.body.session }}",
+              "type": "string"
+            },
+            {
+              "id": "1b74b6df-223b-4e83-ab79-477490faa09f",
+              "name": "chatId",
+              "value": "={{ $json.body.payload.from }}",
+              "type": "string"
+            },
+            {
+              "id": "94a9c147-4824-40b2-b81a-b0b99f86397d",
+              "name": "pushName",
+              "value": "={{ $json.body.payload._data.Info.PushName }}",
+              "type": "string"
+            },
+            {
+              "id": "c2b8ea0c-d639-4d22-99dd-201df71063a3",
+              "name": "payload_id",
+              "value": "={{ $json.body.payload.id }}",
+              "type": "string"
+            },
+            {
+              "id": "18ef0271-23b8-4839-a770-316d0b0cab06",
+              "name": "event",
+              "value": "={{ $json.body.event }}",
+              "type": "string"
+            },
+            {
+              "id": "706abfbe-e71b-454c-8da3-007bf488ec85",
+              "name": "message",
+              "value": "={{ $json.body.payload.body }}",
+              "type": "string"
+            },
+            {
+              "id": "942c4689-c219-4750-abf1-49262ddcd597",
+              "name": "fromMe",
+              "value": "={{ $json.body.payload.fromMe }}",
+              "type": "boolean"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -720,
+        -336
+      ],
+      "id": "bc0c957b-5517-4f0d-8b7e-fd4d3cff4250",
+      "name": "Dados"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.event }}",
+                    "rightValue": "message",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "368812e3-ff47-40d8-92bc-235aeace489b"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -512,
+        -336
+      ],
+      "id": "a1a5bfa5-23d7-4dee-b265-6d825586f49a",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Dados').item.json.chatId }}",
+        "sessionTTL": 3600,
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "typeVersion": 1.5,
+      "position": [
+        -224,
+        -64
+      ],
+      "id": "2a72ad53-1f98-4ebb-9437-b537ef05c24d",
+      "name": "Redis Chat Memory",
+      "credentials": {
+        "redis": {
+          "id": "HuMxSrAUOQSFcr4c",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message }}",
+        "options": {
+          "systemMessage": "Você é um suporte de empreendedorismo focado em ajudar novos microempreendedores tirando duvidas e passando fatos sobre a área.\n\nSempre que algo sobre empreendedorismo for mencionado, utilize a tool para extrair informações de uma base de dados que lhe ajudará a trazer a melhor resposta"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -144,
+        -336
+      ],
+      "id": "a95e3b73-d976-4352-9907-96b7ac76cac5",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://waha:3000/api/sendSeen",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-API-Key",
+              "value": "admin"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "session",
+              "value": "={{ $('Dados').item.json.session }}"
+            },
+            {
+              "name": "chatId",
+              "value": "={{ $('Dados').item.json.chatId }}"
+            },
+            {
+              "name": "MessageId",
+              "value": "={{ $('Dados').item.json.payload_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        208,
+        -336
+      ],
+      "id": "295b2135-a224-4ba9-9417-c99380bee44a",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://waha:3000/api/sendText",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Api-Key",
+              "value": "admin"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chatId",
+              "value": "={{ $('Dados').item.json.chatId }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $('AI Agent').item.json.output }}"
+            },
+            {
+              "name": "session",
+              "value": "={{ $('Dados').item.json.session }}"
+            },
+            {
+              "name": "reply_to"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        464,
+        -336
+      ],
+      "id": "39ab2235-6cf4-4996-9bf4-85a8534811e5",
+      "name": "HTTP Request1"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "accept": "application/json, text/plain, */*",
+            "content-type": "application/json",
+            "user-agent": "WAHA/2026.3.2",
+            "x-webhook-request-id": "5cg9r7mn0kpokv",
+            "x-webhook-timestamp": "1774112394359",
+            "content-length": "2934",
+            "accept-encoding": "gzip, compress, deflate, br",
+            "host": "n8n:5678",
+            "connection": "keep-alive"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "id": "evt_01km8ndk3g2b6abb3nf56e9bmc",
+            "timestamp": 1774112394359,
+            "event": "message",
+            "session": "default",
+            "metadata": {},
+            "me": {
+              "id": "558799285919@c.us",
+              "pushName": "Otavio",
+              "lid": "89155098943678@lid",
+              "jid": "558799285919:44@s.whatsapp.net"
+            },
+            "payload": {
+              "id": "false_88833278373928@lid_ACD0DF13FDBC9BD79CBB88D262E3AF38",
+              "timestamp": 1774112394,
+              "from": "88833278373928@lid",
+              "fromMe": false,
+              "source": "app",
+              "body": "MDS",
+              "to": null,
+              "participant": null,
+              "hasMedia": false,
+              "media": null,
+              "ack": 2,
+              "location": null,
+              "vCards": null,
+              "ackName": "DEVICE",
+              "replyTo": {
+                "id": "3EB03B230653443E521AAA",
+                "participant": "89155098943678@lid",
+                "body": "o modelo de projeto de pesquisa é uma desgraça",
+                "_data": {
+                  "conversation": "o modelo de projeto de pesquisa é uma desgraça"
+                }
+              },
+              "_data": {
+                "Info": {
+                  "Chat": "88833278373928@lid",
+                  "Sender": "88833278373928@lid",
+                  "IsFromMe": false,
+                  "IsGroup": false,
+                  "AddressingMode": "",
+                  "SenderAlt": "558799035087@s.whatsapp.net",
+                  "RecipientAlt": "",
+                  "BroadcastListOwner": "",
+                  "BroadcastRecipients": null,
+                  "ID": "ACD0DF13FDBC9BD79CBB88D262E3AF38",
+                  "ServerID": 0,
+                  "Type": "text",
+                  "PushName": "Letícia",
+                  "Timestamp": "2026-03-21T16:59:54Z",
+                  "Category": "",
+                  "Multicast": false,
+                  "MediaType": "",
+                  "Edit": "",
+                  "MsgBotInfo": {
+                    "EditType": "",
+                    "EditTargetID": "",
+                    "EditSenderTimestampMS": "0001-01-01T00:00:00Z"
+                  },
+                  "MsgMetaInfo": {
+                    "TargetID": "",
+                    "TargetSender": "",
+                    "TargetChat": "",
+                    "DeprecatedLIDSession": null,
+                    "ThreadMessageID": "",
+                    "ThreadMessageSenderJID": ""
+                  },
+                  "VerifiedName": null,
+                  "DeviceSentMeta": null
+                },
+                "Message": {
+                  "extendedTextMessage": {
+                    "text": "MDS",
+                    "previewType": 0,
+                    "contextInfo": {
+                      "stanzaID": "3EB03B230653443E521AAA",
+                      "participant": "89155098943678@lid",
+                      "quotedMessage": {
+                        "conversation": "o modelo de projeto de pesquisa é uma desgraça"
+                      },
+                      "quotedType": 0
+                    },
+                    "inviteLinkGroupTypeV2": 0
+                  },
+                  "messageContextInfo": {
+                    "deviceListMetadata": {
+                      "senderKeyHash": "KwIRogAgk5FTMw==",
+                      "senderTimestamp": 1774091303,
+                      "recipientKeyHash": "+rOBbzyCvurViQ==",
+                      "recipientTimestamp": 1773962220
+                    },
+                    "deviceListMetadataVersion": 2,
+                    "messageSecret": "U2Ooc1P+4Ts4WeFxDaaqC9qRQQfuL+SHlinCSS/0ekk="
+                  }
+                },
+                "IsEphemeral": false,
+                "IsViewOnce": false,
+                "IsViewOnceV2": false,
+                "IsViewOnceV2Extension": false,
+                "IsDocumentWithCaption": false,
+                "IsLottieSticker": false,
+                "IsBotInvoke": false,
+                "IsEdit": false,
+                "SourceWebMsg": null,
+                "UnavailableRequestID": "",
+                "RetryCount": 0,
+                "NewsletterMeta": null,
+                "RawMessage": {
+                  "extendedTextMessage": {
+                    "text": "MDS",
+                    "previewType": 0,
+                    "contextInfo": {
+                      "stanzaID": "3EB03B230653443E521AAA",
+                      "participant": "89155098943678@lid",
+                      "quotedMessage": {
+                        "conversation": "o modelo de projeto de pesquisa é uma desgraça"
+                      },
+                      "quotedType": 0
+                    },
+                    "inviteLinkGroupTypeV2": 0
+                  },
+                  "messageContextInfo": {
+                    "deviceListMetadata": {
+                      "senderKeyHash": "KwIRogAgk5FTMw==",
+                      "senderTimestamp": 1774091303,
+                      "recipientKeyHash": "+rOBbzyCvurViQ==",
+                      "recipientTimestamp": 1773962220
+                    },
+                    "deviceListMetadataVersion": 2,
+                    "messageSecret": "U2Ooc1P+4Ts4WeFxDaaqC9qRQQfuL+SHlinCSS/0ekk="
+                  }
+                },
+                "Status": 3
+              }
+            },
+            "environment": {
+              "version": "2026.3.2",
+              "engine": "GOWS",
+              "tier": "CORE",
+              "browser": null,
+              "platform": "linux/x64",
+              "worker": {
+                "id": null
+              }
+            }
+          },
+          "webhookUrl": "http://localhost:5678/webhook-test/webhook",
+          "executionMode": "test"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Google Drive Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dados": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "f55b8997-3b88-43b0-9e0c-8cc03c592b7d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "38cfd5951d722e82e7f58dd5127757d104076731ff7062c0e6abeb01ba64771c"
+  },
+  "id": "YmTHgmUhCOic8JxQ",
+  "tags": []
+}
